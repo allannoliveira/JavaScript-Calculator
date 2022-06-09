@@ -22,18 +22,55 @@ class Calculator{
 
     // Process all calculator operation
     processOperation(operation){
-        // Get current and previous value
+        //Check if current is empty
+        if(this.currentOperationText.innerText === "" && operation !== "C"){
+            // Change operation
+            if(this.previousOperationText.innerText !== ""){
+                this.changeOperation(operation);
+            }
+            return;
+        }
 
+        // Get current and previous value
         let operationValue
-        const previous = +this.previousOperationText.innerText;
+        const previous = +this.previousOperationText.innerText.split(" ")[0];
         const current = +this.currentOperationText.innerText;
         
         switch(operation){
+
             case "+":
                 operationValue = previous + current;
                 this.updateScreen(operationValue, operation, current, previous)
 
                 break;
+            
+            case "-":
+                operationValue = previous - current;
+                this.updateScreen(operationValue, operation, current, previous)
+                break;
+
+            case "/":
+                operationValue = previous / current;
+                this.updateScreen(operationValue, operation, current, previous)
+                break;    
+            
+            case "*":
+                operationValue = previous * current;
+                this.updateScreen(operationValue, operation, current, previous)
+                break;
+            case "DEL":
+                this.processDelOperator();
+                break;
+                
+            case "CE":
+                this.processClearOperation();
+                break;
+            case "C":
+                this.processClearAllOperation();
+                break;
+            case "=":
+                this.processEqualsOperator();
+                break;        
             default:
                 return;
         }
@@ -56,11 +93,38 @@ class Calculator{
                 }
                 // Add current value to previous
                 this.previousOperationText.innerText = `${operationValue} ${operation}`
-
+                this.currentOperationText.innerText = "";
             }
         
     }
 
+    // Change math operation
+    changeOperation(operation){
+        const mathOperations = ["*", "/", "+", "-"]
+        if(!mathOperations.includes(operation)){
+            return;
+        }
+        this.previousOperationText.innerText = this.previousOperationText.innerText.slice(0, -1) + operation;
+    }
+    // Delete the last digit
+    processDelOperator(){
+        this.currentOperationText.innerText = this.currentOperationText.innerText.slice(0, -1);    
+    }
+    //Clear current operation
+    processClearOperation(){
+        this.currentOperationText.innerText = "" ;
+    }
+    //Clear all operations
+    processClearAllOperation(){
+        this.currentOperationText.innerText = "" ;
+        this.previousOperationText.innerText = "" ;
+    }
+    // Equals operator
+    processEqualsOperator(){
+        const operation = previousOperationText.innerText.split(" ")[1]
+
+        this.processOperation(operation);
+    }
 }
 
 const calc = new Calculator(previousOperationText, currentOperationText);
